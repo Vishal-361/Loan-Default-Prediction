@@ -1,0 +1,131 @@
+{
+  "dataset": {
+    "name": "German Credit (UCI ML Repository, Statlog)",
+    "source_url": "https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/german.data",
+    "why_not_home_credit": "Home Credit Default Risk is Kaggle-only and requires Kaggle API credentials; none are available in this environment (Kaggle API returns 403 without them).",
+    "rows_total": 1000,
+    "rows_train": 600,
+    "rows_validation": 200,
+    "rows_test": 200,
+    "missing_values_raw": 0,
+    "n_raw_features": 20,
+    "n_features_after_one_hot": 61,
+    "n_categorical": 13,
+    "n_numeric": 7,
+    "default_rate_overall": 0.3,
+    "default_rate_train": 0.3,
+    "default_rate_validation": 0.3,
+    "default_rate_test": 0.3,
+    "split": "stratified 60% train / 20% validation / 20% test (random_state=42)",
+    "split_why": "Validation is used for model selection and threshold tuning; the test set is evaluated exactly once so the reported numbers are honest.",
+    "imbalance_handling": "class_weight='balanced' (LR, RF); scale_pos_weight=neg/pos on train (XGBoost). No SMOTE \u2014 with 1,000 rows, class weighting avoids synthetic-sample and leakage risks. (If SMOTE were used it would be fitted on training folds only.)"
+  },
+  "model_comparison_test_at_0.5": {
+    "Logistic Regression": {
+      "test_auc": 0.7901190476190476,
+      "precision@0.5": 0.5411764705882353,
+      "recall@0.5": 0.7666666666666667,
+      "f1@0.5": 0.6344827586206897
+    },
+    "Random Forest": {
+      "test_auc": 0.7761904761904762,
+      "precision@0.5": 0.6206896551724138,
+      "recall@0.5": 0.3,
+      "f1@0.5": 0.4044943820224719
+    },
+    "XGBoost": {
+      "test_auc": 0.7540476190476191,
+      "precision@0.5": 0.5238095238095238,
+      "recall@0.5": 0.55,
+      "f1@0.5": 0.5365853658536586
+    }
+  },
+  "validation_auc": {
+    "Logistic Regression": 0.805595238095238,
+    "Random Forest": 0.8143452380952381,
+    "XGBoost": 0.8332142857142857
+  },
+  "best_model": "XGBoost",
+  "best_model_test_auc": 0.7540476190476191,
+  "threshold": {
+    "tuned_threshold": 0.17396818101406097,
+    "how_chosen": "Maximised F2-score on the validation set (recall weighted 2x precision). In lending a missed defaulter (false negative) costs far more than a false alarm (false positive), so recall is deliberately prioritised.",
+    "default_0.5_metrics_test": {
+      "threshold": 0.5,
+      "precision": 0.5238095238095238,
+      "recall": 0.55,
+      "f1": 0.5365853658536586,
+      "f2": 0.5445544554455446,
+      "confusion_matrix": {
+        "tn": 110,
+        "fp": 30,
+        "fn": 27,
+        "tp": 33
+      }
+    },
+    "tuned_metrics_test": {
+      "threshold": 0.17396818101406097,
+      "precision": 0.41739130434782606,
+      "recall": 0.8,
+      "f1": 0.5485714285714286,
+      "f2": 0.676056338028169,
+      "confusion_matrix": {
+        "tn": 73,
+        "fp": 67,
+        "fn": 12,
+        "tp": 48
+      }
+    }
+  },
+  "explainability": {
+    "method": "SHAP TreeExplainer on the best model, mean |SHAP| over the first 200 test rows",
+    "top_features": [
+      {
+        "feature": "cat__checking_account_status_A14",
+        "mean_abs_shap": 0.6086562275886536
+      },
+      {
+        "feature": "num__duration_months",
+        "mean_abs_shap": 0.4500483274459839
+      },
+      {
+        "feature": "num__credit_amount",
+        "mean_abs_shap": 0.42958199977874756
+      },
+      {
+        "feature": "cat__credit_history_A34",
+        "mean_abs_shap": 0.34846895933151245
+      },
+      {
+        "feature": "cat__employment_since_A74",
+        "mean_abs_shap": 0.23793862760066986
+      },
+      {
+        "feature": "cat__savings_account_A61",
+        "mean_abs_shap": 0.22518643736839294
+      },
+      {
+        "feature": "num__installment_rate_pct",
+        "mean_abs_shap": 0.21856357157230377
+      },
+      {
+        "feature": "num__age_years",
+        "mean_abs_shap": 0.21679498255252838
+      },
+      {
+        "feature": "cat__checking_account_status_A11",
+        "mean_abs_shap": 0.2130541056394577
+      },
+      {
+        "feature": "cat__other_installment_plans_A143",
+        "mean_abs_shap": 0.21244831383228302
+      }
+    ]
+  },
+  "scorecard": {
+    "description": "Simplified points-based scorecard derived from the logistic-regression coefficients: points = round(coef * 20); base points from the intercept. Total score / 20 = linear predictor, so P(default) = sigmoid(score / 20). Full table in scorecard.csv.",
+    "base_points": -14,
+    "intercept_log_odds": -0.6768133353805019,
+    "file": "scorecard.csv"
+  }
+}

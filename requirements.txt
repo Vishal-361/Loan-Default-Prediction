@@ -1,0 +1,13 @@
+# Exact versions verified by running train.py end-to-end (Python 3.12).
+# Note: shap 0.54.1 declares numpy>=2, but it runs fine on numpy 1.26.4
+# here (pip prints a resolver warning, not an error). The warning is safe
+# to ignore; SHAP values were produced successfully in this run.
+pandas==2.1.4
+numpy==1.26.4
+scikit-learn==1.5.2
+scipy==1.14.1
+xgboost==3.4.1
+shap==0.54.1
+streamlit==1.67.0
+matplotlib==3.6.3
+joblib==1.6.0
